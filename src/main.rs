@@ -115,7 +115,7 @@ fn sort_files_by_category(
                 None => {
                     // Handle uncategorized files (optional)
                     // e.g., move to a separate "uncategorized" directory
-                    let uncategorized_dir = input_path.join("uncategorized");
+                    let uncategorized_dir = input_path.join("Uncategorized");
                     if !uncategorized_dir.exists() {
                         fs::create_dir_all(&uncategorized_dir)?;
                     }
