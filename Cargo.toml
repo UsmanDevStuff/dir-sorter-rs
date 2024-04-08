@@ -1,9 +1,15 @@
 [package]
 name = "dir-sorter"
+description = "a eframe gui app to sort any directory"
 version = "0.1.0"
 edition = "2021"
+homepage = "https://github.com/usmandevstuff"
+repository = "https://github.com/usmandevstuff/dir-sorter-rs"
+readme = "README.md"
 authors = ["Muhammad Usman <github.com/usmandevstuff>"]
 
+[badges]
+maintenance = { status = "actively-developed" }
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

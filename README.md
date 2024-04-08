@@ -3,7 +3,7 @@
 a eframe gui app to sort any directory.
 written in **rust**
 
-![ScreenShot](./screenshot.png)
+![ScreenShot](./assets/screenshot.png)
 
 ## Usage
 
