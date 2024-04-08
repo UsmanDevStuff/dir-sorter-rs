@@ -1,12 +1,13 @@
 [package]
 name = "dir-sorter"
 description = "a eframe gui app to sort any directory"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 homepage = "https://github.com/usmandevstuff"
 repository = "https://github.com/usmandevstuff/dir-sorter-rs"
 readme = "README.md"
 authors = ["Muhammad Usman <github.com/usmandevstuff>"]
+license = "MIT"
 
 [badges]
 maintenance = { status = "actively-developed" }
