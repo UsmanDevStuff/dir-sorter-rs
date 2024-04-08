@@ -11,50 +11,103 @@ use eframe::egui::CursorIcon;
 
 use rfd::FileDialog;
 
-#[derive(Default)]
+//#[derive(Default)]
 struct SorterApp {
     text: String,
+    current_page: CurrentPage,
+}
+
+enum CurrentPage {
+    Sorter,
+    About,
+}
+
+impl Default for SorterApp {
+    fn default() -> Self {
+        SorterApp {
+            text: String::default(),
+            current_page: CurrentPage::Sorter,
+        }
+    }
 }
 
 impl eframe::App for SorterApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.vertical_centered(|ui| {
-                ui.add_space(15.0);
-                ui.label("Enter Full Directory Path:");
-                ui.add_space(5.0);
-            });
+        //let mut current_page = CurrentPage::Sorter;
 
-            ui.vertical_centered(|ui| {
-                ui.text_edit_singleline(&mut self.text);
-                ui.add_space(4.0);
-                if ui.button("Select Directory").clicked() {
-                    if let Some(path) = FileDialog::new().pick_folder() {
-                        self.text = path.display().to_string();
-                    }
-                }
-            });
-            ui.vertical_centered(|ui| {
-                ui.add_space(15.0);
-                if ui
-                    .button("Sort Directory")
-                    .on_hover_cursor(CursorIcon::PointingHand)
-                    .clicked()
-                {
-                    // Handle button click here (e.g., print the text)
-                    println!("Input Directory Path: {}", self.text);
-                    sort(&self.text).ok().expect("sort function failed");
-                    println!("Directory sorted successfully!");
-                }
-            });
-            //let _dir = self.text.as_str();
+        egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
+         // Add buttons or other UI elements to switch pages
+        ui.horizontal(|ui| {
+            if ui.button("Sorter").clicked() {
+                self.current_page = CurrentPage::Sorter;
+            }
+            if ui.button("About").clicked(){
+                self.current_page = CurrentPage::About;
+            }
         });
+    });
+
+        match self.current_page {
+            CurrentPage::Sorter => {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.vertical_centered(|ui| {
+                        ui.add_space(15.0);
+                        ui.label("Enter Full Directory Path:");
+                        ui.add_space(5.0);
+                    });
+        
+                    ui.vertical_centered(|ui| {
+                        ui.horizontal(|ui| {
+                            ui.text_edit_singleline(&mut self.text);
+                            ui.add_space(4.0);
+                            if ui.button("Select Directory").clicked() {
+                                if let Some(path) = FileDialog::new().pick_folder() {
+                                    self.text = path.display().to_string();
+                            }
+                        }
+                        });
+                        
+                    });
+                    ui.vertical_centered(|ui| {
+                        ui.add_space(15.0);
+                        if ui
+                            .button("Sort Directory")
+                            .on_hover_cursor(CursorIcon::PointingHand)
+                            .clicked()
+                        {
+                            // Handle button click here (e.g., print the text)
+                            println!("Input Directory Path: {}", self.text);
+                            sort(&self.text).ok().expect("sort function failed");
+                        }
+                    });
+                    ui.vertical_centered(|ui| {
+                        ui.add_space(20.0);
+                        ui.separator();
+                        ui.label("Made with ❤️ by Muhammad Usman");
+                    });
+                    //let _dir = self.text.as_str();
+                });
+            },
+            CurrentPage::About => {
+                egui::CentralPanel::default().show(ctx, |ui| {
+                    ui.vertical_centered(|ui| {
+                        ui.add_space(15.0);
+                        ui.label("About");
+                        ui.add_space(10.0);
+                        ui.label("Me:");
+                        ui.label("Muhammad Usman");
+                        ui.add_space(5.0);
+                        ui.hyperlink("https://github.com/usmandevstuff");
+                    });
+                });
+            }
+        }
     }
 }
 
 fn main() {
     let native_options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([320.0, 170.0]),
+        viewport: egui::ViewportBuilder::default().with_inner_size([420.0, 180.0]).with_resizable(false),
         ..Default::default()
     };
     // Fix: Pass the closure with CreationContext argument
@@ -66,6 +119,10 @@ fn main() {
 }
 
 fn sort(input_path: &str) -> io::Result<()> {
+    if input_path.is_empty() {
+        println!("Please provide directory path.");
+        return Ok(());
+    }
     // Define categories and their corresponding file extensions
     let categories: HashMap<&str, Vec<&str>> = [
         ("Images", vec!["jpg", "png", "gif", "bmp", "webp", "jpeg"]),
@@ -94,7 +151,7 @@ fn sort(input_path: &str) -> io::Result<()> {
 
     let input_path = Path::new(&input_dir);
     sort_files_by_category(input_path, &categories)?;
-
+    println!("Directory sorted successfully!");
     Ok(())
 }
 
