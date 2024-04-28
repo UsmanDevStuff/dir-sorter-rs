@@ -10,7 +10,7 @@ use crate::sort_files;
 pub fn sort(input_path: &str) -> io::Result<()> {
     if input_path.is_empty() {
         println!("{}", "Error: Please provide directory path!".red());
-        return Ok(());
+        return Err(io::Error::new(io::ErrorKind::Unsupported, "input directory path is empty"));
     }
     // Define categories and their corresponding file extensions
     let categories: HashMap<&str, Vec<&str>> = [
@@ -23,11 +23,21 @@ pub fn sort(input_path: &str) -> io::Result<()> {
         ("ISO Files", vec!["iso"]),
         // Add more categories and extensions as needed
     ]
-    .iter()
-    .cloned()
-    .collect::<HashMap<&str, Vec<&str>>>();
+        .iter()
+        .cloned()
+        .collect::<HashMap<&str, Vec<&str>>>();
 
-    let exclude_folders = vec!["Images", "Videos", "Documents", "Code", "Archives", "Executables", "ISO Files", "Uncategorized", "Directories"];
+    let exclude_folders = vec![
+        "Images",
+        "Videos",
+        "Documents",
+        "Code",
+        "Archives",
+        "Executables",
+        "ISO Files",
+        "Uncategorized",
+        "Directories"
+    ];
 
     //let input_dir = "C:\\Users\\Muhammad_Usman\\Downloads";
     // Get input directory path from user
