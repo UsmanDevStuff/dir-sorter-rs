@@ -3,6 +3,8 @@
 use eframe::egui;
 use eframe::egui::CursorIcon;
 
+use colored::Colorize;
+
 use rfd::FileDialog;
 
 mod sort;
@@ -74,8 +76,12 @@ impl eframe::App for SorterApp {
                             .clicked()
                         {
                             // Handle button click here (e.g., print the text)
-                            println!("Input Directory Path: {}", self.text);
-                            sort::sort(&self.text).ok().expect("sort function failed OR a file/folder is in use, close it and run again.");
+                            println!("{} {}", "Input Directory Path:".blue().bold(), self.text.blue());
+                            match sort::sort(&self.text) {
+                                Ok(_) => println!("{}", "Directory sorted successfully!".green()),
+                                Err(e) => println!("Error: {}", e),
+                            }
+                            // sort::sort(&self.text).ok().expect("sort function failed OR a file/folder is in use, close it and run again.");
                         }
                     });
                     ui.vertical_centered(|ui| {

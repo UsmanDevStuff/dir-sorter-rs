@@ -3,11 +3,13 @@ use std::fs;
 use std::collections::HashMap;
 use std::path::Path;
 
+use colored::Colorize;
+
 use crate::sort_files;
 
 pub fn sort(input_path: &str) -> io::Result<()> {
     if input_path.is_empty() {
-        println!("Please provide directory path.");
+        println!("{}", "Error: Please provide directory path!".red());
         return Ok(());
     }
     // Define categories and their corresponding file extensions
@@ -40,14 +42,13 @@ pub fn sort(input_path: &str) -> io::Result<()> {
 
     let input_path = Path::new(&input_dir);
     sort_files::sort_files_by_category(input_path, &categories, exclude_folders)?;
-    println!("Directory sorted successfully!");
     Ok(())
 }
 
 pub fn delete_empty_directory(dir: &Path) -> io::Result<()> {
     if fs::read_dir(dir)?.next().is_none() {
         fs::remove_dir(dir)?;
-        println!("Deleted empty directory: {} \n", dir.display());
+        println!("{}Deleted empty directory: {}", "*".yellow(), dir.display());
     }
     Ok(())
 }
