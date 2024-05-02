@@ -1,6 +1,7 @@
 // disable console on windows
 //#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 use eframe::egui;
+use eframe::egui::IconData;
 use eframe::egui::CursorIcon;
 
 use colored::Colorize;
@@ -36,16 +37,16 @@ impl eframe::App for SorterApp {
         //let mut current_page = CurrentPage::Sorter;
 
         egui::TopBottomPanel::top("top-panel").show(ctx, |ui| {
-         // Add buttons or other UI elements to switch pages
-        ui.horizontal(|ui| {
-            if ui.button("Sorter").clicked() {
-                self.current_page = CurrentPage::Sorter;
-            }
-            if ui.button("About").clicked(){
-                self.current_page = CurrentPage::About;
-            }
+            // Add buttons or other UI elements to switch pages
+            ui.horizontal(|ui| {
+                if ui.button("Sorter").clicked() {
+                    self.current_page = CurrentPage::Sorter;
+                }
+                if ui.button("About").clicked() {
+                    self.current_page = CurrentPage::About;
+                }
+            });
         });
-    });
 
         match self.current_page {
             CurrentPage::Sorter => {
@@ -55,7 +56,7 @@ impl eframe::App for SorterApp {
                         ui.label("Enter Full Directory Path:");
                         ui.add_space(5.0);
                     });
-        
+
                     ui.vertical_centered(|ui| {
                         ui.horizontal(|ui| {
                             ui.text_edit_singleline(&mut self.text);
@@ -63,20 +64,24 @@ impl eframe::App for SorterApp {
                             if ui.button("Select Directory").clicked() {
                                 if let Some(path) = FileDialog::new().pick_folder() {
                                     self.text = path.display().to_string();
+                                }
                             }
-                        }
                         });
-                        
                     });
                     ui.vertical_centered(|ui| {
                         ui.add_space(15.0);
-                        if ui
-                            .button("Sort Directory")
-                            .on_hover_cursor(CursorIcon::PointingHand)
-                            .clicked()
+                        if
+                            ui
+                                .button("Sort Directory")
+                                .on_hover_cursor(CursorIcon::PointingHand)
+                                .clicked()
                         {
                             // Handle button click here (e.g., print the text)
-                            println!("{} {}", "Input Directory Path:".blue().bold(), self.text.blue());
+                            println!(
+                                "{} {}",
+                                "Input Directory Path:".blue().bold(),
+                                self.text.blue()
+                            );
                             match sort::sort(&self.text) {
                                 Ok(_) => println!("{}", "Directory sorted successfully!".green()),
                                 Err(e) => println!("Error: {}", e),
@@ -84,14 +89,9 @@ impl eframe::App for SorterApp {
                             // sort::sort(&self.text).ok().expect("sort function failed OR a file/folder is in use, close it and run again.");
                         }
                     });
-                    ui.vertical_centered(|ui| {
-                        ui.add_space(20.0);
-                        ui.separator();
-                        ui.label("Made with ❤️ by Muhammad Usman");
-                    });
                     //let _dir = self.text.as_str();
                 });
-            },
+            }
             CurrentPage::About => {
                 egui::CentralPanel::default().show(ctx, |ui| {
                     ui.vertical_centered(|ui| {
@@ -110,14 +110,29 @@ impl eframe::App for SorterApp {
 }
 
 fn main() {
+    let icon = include_bytes!("../assets/icon/icon-192.png");
+    let icon_image = image::load_from_memory(icon).unwrap();
+    let width = icon_image.width();
+    let height = icon_image.height();
+    let icon_rgba8 = icon_image.into_rgba8().to_vec();
+    let icon_data = IconData {
+        rgba: icon_rgba8,
+        width,
+        height,
+    };
     let native_options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default().with_inner_size([420.0, 180.0]).with_resizable(false),
+        viewport: egui::ViewportBuilder
+            ::default()
+            .with_inner_size([420.0, 180.0])
+            .with_resizable(false)
+            .with_icon(icon_data),
+        follow_system_theme: true,
         ..Default::default()
     };
     // Fix: Pass the closure with CreationContext argument
     let _ = eframe::run_native(
-        "Auto Directory Sorter",
+        "Directory Sorter",
         native_options,
-        Box::new(|_cc| Box::new(SorterApp::default())),
+        Box::new(|_cc| Box::new(SorterApp::default()))
     );
 }

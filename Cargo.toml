@@ -16,6 +16,7 @@ maintenance = { status = "actively-developed" }
 [dependencies]
 colored = "2.1.0"
 eframe = "0.27.2"
+image = "0.25.1"
 rfd = "0.14.1"
 
 [profile.release]
