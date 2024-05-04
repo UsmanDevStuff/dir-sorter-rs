@@ -44,7 +44,7 @@ pub fn sort_files_by_category(
             // Move the file to the category directory
             fs::rename(&path, category_dir.join(path.file_name().unwrap()))?;
             println!(
-                "{}Moved file:{} to category {}",
+                "{}Moved file:{} to category '{}'",
                 "*".yellow(),
                 path.display(),
                 category.unwrap_or("Uncategorized".to_string())
